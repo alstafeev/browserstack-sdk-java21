@@ -1,0 +1,32 @@
+userName: username
+accessKey: password
+
+projectName: Adformats
+buildName: adformats
+buildIdentifier: ${DATE_TIME}
+framework: junit5
+
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: Chrome
+    browserVersion: latest
+
+parallelsPerPlatform: 5
+
+browserstackLocal: true
+browserStackLocalOptions:
+  localIdentifier: randomstring
+  forceLocal: true
+
+debug: true
+networkLogs: true
+acceptInsecureCerts: true
+consoleLogs: verbose
+appiumLogs: true
+seleniumLogs: true
+
+disableCorsRestrictions: true
+safariAllowPopups: true
+
+selfHeal: true

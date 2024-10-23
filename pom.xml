@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <artifactId>click-autotests</artifactId>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.8.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
+            <id>getClasspathFilenames</id>
+          </execution>
+          <execution>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <artifactId>aspectjweaver</artifactId>
+                  <groupId>org.aspectj</groupId>
+                  <outputDirectory>${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}
+                  </outputDirectory>
+                  <version>${aspectj.version}</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <id>copy-agent</id>
+            <phase>process-test-classes</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>com.clickadu.SpringBootTestApplication</include>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <!--suppress UnresolvedMavenProperty -->
+          <argLine>
+            -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+            -javaagent:${com.browserstack:browserstack-java-sdk:jar}
+          </argLine>
+          <systemPropertyVariables>
+            <browserstackconfigfile>${project.basedir}/windows-chrome.yml</browserstackconfigfile>
+          </systemPropertyVariables>
+          <useSystemClassLoader>true</useSystemClassLoader>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.2.5</version>
+      </plugin>
+      <plugin>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <agents>
+            <agent>
+              ${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+            </agent>
+            <!--suppress UnresolvedMavenProperty -->
+            <agent>
+              ${com.browserstack:browserstack-java-sdk:jar}
+            </agent>
+          </agents>
+          <systemPropertyVariables>
+            <browserstackconfigfile>${project.basedir}/windows-chrome.yml</browserstackconfigfile>
+          </systemPropertyVariables>
+          <!--suppress UnresolvedMavenProperty -->
+          <jvmArguments>
+            -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
+            -javaagent:${com.browserstack:browserstack-java-sdk:jar}
+          </jvmArguments>
+        </configuration>
+        <groupId>org.springframework.boot</groupId>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+    <dependency>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+    <dependency>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+    <dependency>
+      <artifactId>spring-boot-starter</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring-boot-starter-logging</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.hypersistence/hypersistence-utils-hibernate-63 -->
+    <dependency>
+      <artifactId>hypersistence-utils-hibernate-63</artifactId>
+      <groupId>io.hypersistence</groupId>
+      <version>3.8.2</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>jsonassert</artifactId>
+          <groupId>org.skyscreamer</groupId>
+        </exclusion>
+      </exclusions>
+      <groupId>org.springframework.boot</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+    <dependency>
+      <artifactId>spring-test</artifactId>
+      <groupId>org.springframework</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations -->
+    <dependency>
+      <artifactId>swagger-annotations</artifactId>
+      <groupId>io.swagger.core.v3</groupId>
+      <version>2.2.23</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+    <dependency>
+      <artifactId>rest-assured</artifactId>
+      <groupId>io.rest-assured</groupId>
+      <version>5.5.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+    <dependency>
+      <artifactId>gson</artifactId>
+      <groupId>com.google.code.gson</groupId>
+      <version>2.11.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.gsonfire/gson-fire -->
+    <dependency>
+      <artifactId>gson-fire</artifactId>
+      <groupId>io.gsonfire</groupId>
+      <version>1.9.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.squareup.okio/okio -->
+    <dependency>
+      <artifactId>okio</artifactId>
+      <groupId>com.squareup.okio</groupId>
+      <version>3.9.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-annotations -->
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
+      <version>4.8.6</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
+    <dependency>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <groupId>jakarta.annotation</groupId>
+      <version>3.0.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <artifactId>lombok</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <scope>provided</scope>
+      <version>1.18.34</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+    <dependency>
+      <artifactId>assertj-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <version>3.26.3</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <version>2.24.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+    <dependency>
+      <artifactId>log4j-api</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <version>2.24.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
+    <dependency>
+      <artifactId>webdrivermanager</artifactId>
+      <groupId>io.github.bonigarcia</groupId>
+      <exclusions>
+        <exclusion>
+          <artifactId>selenium-java</artifactId>
+          <groupId>org.seleniumhq.selenium</groupId>
+        </exclusion>
+      </exclusions>
+      <version>5.9.2</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.codeborne/selenide-selenoid -->
+    <dependency>
+      <artifactId>selenide</artifactId>
+      <groupId>com.codeborne</groupId>
+      <version>7.5.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.codeborne/selenide-selenoid -->
+    <dependency>
+      <artifactId>selenide-selenoid</artifactId>
+      <groupId>com.codeborne</groupId>
+      <version>7.5.1</version>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+    <dependency>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <version>2.18.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-java-commons -->
+    <dependency>
+      <artifactId>allure-java-commons</artifactId>
+      <groupId>io.qameta.allure</groupId>
+      <version>2.29.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5 -->
+    <dependency>
+      <artifactId>allure-junit5</artifactId>
+      <groupId>io.qameta.allure</groupId>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit-jupiter-params</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-platform-engine</artifactId>
+          <groupId>org.junit.platform</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-api</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+      </exclusions>
+      <version>2.29.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-rest-assured -->
+    <dependency>
+      <artifactId>allure-rest-assured</artifactId>
+      <groupId>io.qameta.allure</groupId>
+      <version>2.29.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-selenide -->
+    <dependency>
+      <artifactId>allure-selenide</artifactId>
+      <groupId>io.qameta.allure</groupId>
+      <version>2.29.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.awaitility/awaitility -->
+    <dependency>
+      <artifactId>awaitility</artifactId>
+      <groupId>org.awaitility</groupId>
+      <version>4.2.2</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
+    <dependency>
+      <artifactId>junit-jupiter</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <version>5.11.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+    <dependency>
+      <artifactId>selenium-java</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>selenium-remote-driver</artifactId>
+          <groupId>org.seleniumhq.selenium</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-http -->
+    <dependency>
+      <artifactId>selenium-http</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-http-jdk-client -->
+    <dependency>
+      <artifactId>selenium-http-jdk-client</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.13.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-api -->
+    <dependency>
+      <artifactId>selenium-api</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/net.datafaker/datafaker -->
+    <dependency>
+      <artifactId>datafaker</artifactId>
+      <groupId>net.datafaker</groupId>
+      <version>2.4.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.appium/java-client -->
+    <dependency>
+      <artifactId>java-client</artifactId>
+      <groupId>io.appium</groupId>
+      <exclusions>
+        <exclusion>
+          <artifactId>selenium-java</artifactId>
+          <groupId>org.seleniumhq.selenium</groupId>
+        </exclusion>
+      </exclusions>
+      <version>9.3.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-safari-driver -->
+    <dependency>
+      <artifactId>selenium-safari-driver</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-devtools-v126 -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-devtools-v129</artifactId>
+      <version>4.25.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>selenium-json</artifactId>
+          <groupId>org.seleniumhq.selenium</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-json -->
+    <dependency>
+      <artifactId>selenium-json</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-remote-driver -->
+    <dependency>
+      <artifactId>selenium-remote-driver</artifactId>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
+    <dependency>
+      <artifactId>byte-buddy</artifactId>
+      <groupId>net.bytebuddy</groupId>
+      <version>1.15.3</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.browserstack/browserstack-java-sdk -->
+    <dependency>
+      <groupId>com.browserstack</groupId>
+      <artifactId>browserstack-java-sdk</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>java-client</artifactId>
+          <groupId>io.appium</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>json</artifactId>
+          <groupId>org.json</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>logback-classic</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
+      <scope>compile</scope>
+      <version>${browserstack.java.sdk.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.openapitools/openapi-generator-maven-plugin -->
+    <dependency>
+      <artifactId>openapi-generator-maven-plugin</artifactId>
+      <groupId>org.openapitools</groupId>
+      <scope>provided</scope>
+      <version>7.8.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.openapitools/jackson-databind-nullable -->
+    <dependency>
+      <artifactId>jackson-databind-nullable</artifactId>
+      <groupId>org.openapitools</groupId>
+      <version>0.2.6</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/properties-maven-plugin -->
+    <dependency>
+      <artifactId>properties-maven-plugin</artifactId>
+      <groupId>org.codehaus.mojo</groupId>
+      <version>1.2.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+      <artifactId>postgresql</artifactId>
+      <groupId>org.postgresql</groupId>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-rng-core -->
+    <dependency>
+      <artifactId>commons-rng-core</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <version>1.6</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-rng-simple -->
+    <dependency>
+      <artifactId>commons-rng-simple</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <version>1.6</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
+    <dependency>
+      <artifactId>commons-csv</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <version>1.12.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+    <dependency>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <version>5.11.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.11.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-commons -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+      <version>1.11.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chrome-driver -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chrome-driver</artifactId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-firefox-driver</artifactId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-chromium-driver -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-chromium-driver</artifactId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-ie-driver -->
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-ie-driver</artifactId>
+      <version>4.25.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+    <dependency>
+      <artifactId>pdfbox</artifactId>
+      <groupId>org.apache.pdfbox</groupId>
+      <version>3.0.3</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+    <dependency>
+      <artifactId>aspectjweaver</artifactId>
+      <groupId>org.aspectj</groupId>
+      <scope>runtime</scope>
+      <version>${aspectj.version}</version>
+    </dependency>
+  </dependencies>
+
+  <groupId>com.clickadu</groupId>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <groupId>org.springframework.boot</groupId>
+    <relativePath/>
+    <version>3.3.4</version>
+  </parent>
+
+  <properties>
+    <browserstack.java.sdk.version>1.25.1</browserstack.java.sdk.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <java.version>21</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <version>1.0-SNAPSHOT</version>
+</project>
